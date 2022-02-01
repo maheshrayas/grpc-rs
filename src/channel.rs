@@ -94,6 +94,26 @@ impl ChannelBuilder {
         self
     }
 
+     /// Set true to enable http proxy
+    pub fn enable_http_proxy(mut self, enable: bool) -> ChannelBuilder {
+        self.options.insert(
+            Cow::Borrowed(grpcio_sys::GRPC_ARG_ENABLE_HTTP_PROXY),
+            Options::Integer(enable as i32),
+        );
+        self
+    }
+
+    
+
+      /// Set true to enable http proxy
+      pub fn set_http_proxy<S: Into<Vec<u8>>>(mut self, proxy: S) -> ChannelBuilder {
+        self.options.insert(
+            Cow::Borrowed(grpcio_sys::GRPC_ARG_HTTP_PROXY),
+            Options::String(CString::new(proxy).unwrap()),
+        );
+        self
+    }
+
     /// Set resource quota by consuming a ResourceQuota
     pub fn set_resource_quota(mut self, quota: ResourceQuota) -> ChannelBuilder {
         unsafe {
@@ -435,6 +455,7 @@ impl ChannelBuilder {
         )) {
             e.insert(Options::String(format_user_agent_string("")));
         }
+
         self.build_args()
     }
 
